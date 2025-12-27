@@ -1,0 +1,14 @@
+{
+  "type": "record",
+  "name": "ProductAnalysisResult",
+  "namespace": "com.streamguard",
+  "fields": [
+    {"name": "product_id", "type": "string"},
+    {"name": "image_url", "type": "string"},
+    {"name": "brand", "type": ["null", "string"], "default": null},
+    {"name": "product_condition", "type": ["null", "string"], "default": null},
+    {"name": "color", "type": ["null", "string"], "default": null},
+    {"name": "has_scratches", "type": ["null", "boolean"], "default": null},
+    {"name": "event_time", "type": "long"}
+  ]
+}

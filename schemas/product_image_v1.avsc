@@ -1,0 +1,10 @@
+{
+  "type": "record",
+  "name": "ProductImage",
+  "namespace": "com.streamguard",
+  "fields": [
+    {"name": "product_id", "type": "string"},
+    {"name": "image_url", "type": "string"},
+    {"name": "event_time", "type": "long"}
+  ]
+}
