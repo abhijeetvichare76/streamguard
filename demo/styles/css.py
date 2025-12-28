@@ -144,24 +144,26 @@ def load_custom_css():
                 text-align: center;
                 animation: bounce 2s infinite;
                 cursor: pointer;
+                opacity: 1 !important;
             }
 
             .scroll-indicator span {
                 display: block;
                 width: 20px;
                 height: 20px;
-                border-bottom: 2px solid #8B949E;
-                border-right: 2px solid #8B949E;
+                border-bottom: 2px solid #4ECDC4;
+                border-right: 2px solid #4ECDC4;
                 transform: rotate(45deg);
                 margin: -10px auto;
             }
 
             .scroll-text {
                 font-family: 'Inter', sans-serif;
-                font-size: 0.7rem;
+                font-size: 0.9rem;
+                font-weight: 700;
                 color: #4ECDC4;
                 text-transform: uppercase;
-                letter-spacing: 3px;
+                letter-spacing: 4px;
                 margin-bottom: 15px;
             }
 
@@ -269,10 +271,15 @@ def load_custom_css():
             .acronym-word {
                 font-size: 1.5rem;
                 color: #FAFAFA;
+                font-weight: 700;
                 opacity: 1;
             }
             .scroll-fold.in-view .acronym-word {
-                animation: reveal-in 0.5s forwards;
+                animation: reveal-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            }
+            @keyframes reveal-in {
+                from { opacity: 0; transform: translateY(10px); filter: blur(5px); }
+                to { opacity: 1; transform: translateY(0); filter: blur(0); }
             }
 
             /* Timeline Animation */

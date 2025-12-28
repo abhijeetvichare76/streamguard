@@ -14,7 +14,7 @@ def render():
 <h1 class="reveal-item gradient-hero" style="font-size: 4.8rem; line-height: 1.05; margin-bottom: 2rem; letter-spacing: -3px;">When Every Transaction Could Be<br>Someone's Life Savings</h1>
 <p class="reveal-item subtitle" style="font-size: 1.6rem; color: #8B949E; font-weight: 400; letter-spacing: 1px;">Real-Time Fraud Detection. Autonomous Response.</p>
 </div>
-<div class="scroll-indicator reveal-item" style="margin-top: 5rem;">
+<div class="scroll-indicator" style="margin-top: 5rem;">
 <div class="scroll-text">Scroll to Begin</div>
 <span></span>
 <span></span>
