@@ -98,7 +98,28 @@ def get_detective_agent():
     global _detective_agent_instance
     if _detective_agent_instance is None:
         project_id, region = get_gcp_config()
-        print(f"DEBUG: Initializing Gemini with project={project_id}, location={region}, vertexai=True")
+
+        # Initialize Vertex AI explicitly with credentials
+        try:
+            import streamlit as st
+            from google.oauth2 import service_account
+            import vertexai
+
+            credentials = None
+            if hasattr(st, 'secrets') and "gcp_service_account" in st.secrets:
+                # Create credentials from service account
+                credentials = service_account.Credentials.from_service_account_info(
+                    dict(st.secrets["gcp_service_account"])
+                )
+                print(f"DEBUG: Using service account credentials from secrets")
+
+            # Initialize Vertex AI with explicit credentials
+            vertexai.init(project=project_id, location=region, credentials=credentials)
+            print(f"DEBUG: Initialized Vertex AI with project={project_id}, location={region}")
+        except Exception as e:
+            print(f"DEBUG: Vertex AI init failed: {e}")
+
+        print(f"DEBUG: Creating Gemini model with project={project_id}, location={region}, vertexai=True")
         _detective_agent_instance = Agent(
             name="detective",
             model=Gemini(model="gemini-2.0-flash-001", vertexai=True, project=project_id, location=region),
