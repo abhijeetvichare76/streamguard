@@ -22,6 +22,12 @@ def check_vertex_available() -> bool:
 
     if HAS_STREAMLIT and hasattr(st, 'secrets'):
         project_id = st.secrets.get("GCP_PROJECT_ID")
+        # Fallback: try to get project_id from service account info
+        if not project_id and "gcp_service_account" in st.secrets:
+            try:
+                project_id = st.secrets["gcp_service_account"].get("project_id")
+            except:
+                pass
 
     if not project_id:
         project_id = os.getenv("GCP_PROJECT_ID")

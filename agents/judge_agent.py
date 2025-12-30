@@ -57,6 +57,10 @@ def get_gcp_config():
                 json.dump(service_account_info, temp_file)
                 temp_file.close()
 
+                # Extract project_id from service account if not already set
+                if not project_id:
+                     project_id = service_account_info.get("project_id")
+
                 # Set the environment variable that google-cloud libraries use
                 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_file.name
 
