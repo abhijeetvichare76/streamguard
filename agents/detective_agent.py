@@ -68,6 +68,9 @@ def get_gcp_config():
 
                 # Set the environment variable that google-cloud libraries use
                 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = temp_file.name
+                print(f"DEBUG: Set GOOGLE_APPLICATION_CREDENTIALS to {temp_file.name}")
+            else:
+                 print("DEBUG: gcp_service_account NOT found in secrets (detective)")
 
             # Get project and region
             explicit_project_id = st.secrets.get("GCP_PROJECT_ID") or st.secrets.get("gcp_project_id")
@@ -95,6 +98,7 @@ def get_detective_agent():
     global _detective_agent_instance
     if _detective_agent_instance is None:
         project_id, region = get_gcp_config()
+        print(f"DEBUG: Initializing Gemini with project={project_id}, location={region}, vertexai=True")
         _detective_agent_instance = Agent(
             name="detective",
             model=Gemini(model="gemini-2.0-flash-001", vertexai=True, project=project_id, location=region),
