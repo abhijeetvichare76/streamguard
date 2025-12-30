@@ -80,14 +80,6 @@ def get_detective_agent():
         )
     return _detective_agent_instance
 
-# Expose as detective_agent for backward compatibility
-# This will be called when the module attribute is accessed
-class _LazyAgent:
-    def __getattr__(self, name):
-        return getattr(get_detective_agent(), name)
-
-    def __call__(self, *args, **kwargs):
-        return get_detective_agent()(*args, **kwargs)
-
-detective_agent = _LazyAgent()
+# For backward compatibility - auto-initialize when imported directly
+detective_agent = None  # Will be None until get_detective_agent() is called
 

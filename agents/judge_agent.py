@@ -75,14 +75,6 @@ def get_judge_agent():
         )
     return _judge_agent_instance
 
-# Expose as judge_agent for backward compatibility
-# This will be called when the module attribute is accessed
-class _LazyAgent:
-    def __getattr__(self, name):
-        return getattr(get_judge_agent(), name)
-
-    def __call__(self, *args, **kwargs):
-        return get_judge_agent()(*args, **kwargs)
-
-judge_agent = _LazyAgent()
+# For backward compatibility - auto-initialize when imported directly
+judge_agent = None  # Will be None until get_judge_agent() is called
 

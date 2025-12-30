@@ -81,8 +81,12 @@ class PlaygroundInvestigator:
         # Import agents
         import sys
         sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
-        from agents.detective_agent import detective_agent
-        from agents.judge_agent import judge_agent
+        from agents.detective_agent import get_detective_agent
+        from agents.judge_agent import get_judge_agent
+
+        # Get agent instances (lazy initialization happens here)
+        detective_agent = get_detective_agent()
+        judge_agent = get_judge_agent()
 
         tx_id = transaction_data.get("transaction_id", "pg_unknown")
         user_id = transaction_data.get("user_id", "unknown")
