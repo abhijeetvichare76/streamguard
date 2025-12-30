@@ -1,0 +1,29 @@
+{
+  "type": "record",
+  "name": "MobileBankingSession",
+  "namespace": "com.streamguard.banking",
+  "doc": "User behavior during banking session",
+  "fields": [
+    {"name": "session_id", "type": "string"},
+    {"name": "transaction_id", "type": ["null", "string"], "default": null},
+    {"name": "user_id", "type": "string"},
+    {"name": "event_type", "type": {"type": "enum", "name": "SessionEvent", "symbols": ["LOGIN", "NAVIGATE_TRANSFER", "INPUT_AMOUNT", "SUBMIT"]}},
+
+    {"name": "is_call_active", "type": "boolean", "doc": "CRITICAL fraud signal"},
+    {"name": "typing_cadence_score", "type": "float", "doc": "0.0-1.0, lower=hesitant"},
+    {"name": "session_duration_seconds", "type": "int", "doc": "Rushed transaction?"},
+    {"name": "battery_level", "type": "int"},
+
+    {"name": "app_version", "type": "string"},
+    {"name": "os_version", "type": "string"},
+    {"name": "is_rooted_jailbroken", "type": "boolean"},
+
+    {"name": "geolocation_lat", "type": "double"},
+    {"name": "geolocation_lon", "type": "double"},
+    {"name": "geolocation_accuracy_meters", "type": "float"},
+
+    {"name": "time_of_day_hour", "type": "int", "doc": "0-23, unusual hours?"},
+
+    {"name": "event_time", "type": "long", "logicalType": "timestamp-millis"}
+  ]
+}

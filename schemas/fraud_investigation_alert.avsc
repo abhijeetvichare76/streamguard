@@ -1,0 +1,17 @@
+{
+  "type": "record",
+  "name": "FraudInvestigationAlert",
+  "namespace": "com.streamguard.alerts",
+  "doc": "Alert to trigger agent investigation",
+  "fields": [
+    {"name": "alert_id", "type": "string"},
+    {"name": "transaction_id", "type": "string"},
+    {"name": "user_id", "type": "string"},
+    {"name": "amount", "type": "double"},
+    {"name": "beneficiary_account", "type": "string"},
+    {"name": "investigation_type", "type": "string", "doc": "high_value, velocity, app_fraud, etc."},
+    {"name": "suggested_quarantine_name", "type": "string"},
+    {"name": "priority", "type": "string"},
+    {"name": "event_time", "type": "long", "logicalType": "timestamp-millis"}
+  ]
+}

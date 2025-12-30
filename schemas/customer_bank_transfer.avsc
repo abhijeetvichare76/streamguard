@@ -1,0 +1,22 @@
+{
+  "type": "record",
+  "name": "CustomerBankTransfer",
+  "namespace": "com.streamguard.banking",
+  "doc": "Bank transfer with playground traceability",
+  "fields": [
+    {"name": "transaction_id", "type": "string"},
+    {"name": "playground_run_id", "type": ["null", "string"], "doc": "Unique ID per playground run for E2E tracing", "default": null},
+    {"name": "sender_user_id", "type": "string"},
+    {"name": "beneficiary_account_id", "type": "string"},
+    {"name": "amount", "type": "double"},
+    {"name": "currency", "type": "string", "default": "USD"},
+    {"name": "session_id", "type": "string", "doc": "Links to BigQuery mobile_banking_sessions"},
+    {"name": "first_transfer_to_beneficiary", "type": "boolean"},
+    {"name": "transfer_count_last_hour", "type": "int"},
+    {"name": "device_fingerprint", "type": ["null", "string"], "default": null},
+    {"name": "ip_address", "type": ["null", "string"], "default": null},
+    {"name": "geolocation_lat", "type": "double"},
+    {"name": "geolocation_lon", "type": "double"},
+    {"name": "event_time", "type": "long", "logicalType": "timestamp-millis"}
+  ]
+}

@@ -1,13 +1,16 @@
 {
   "type": "record",
-  "name": "RawTransaction",
-  "namespace": "com.streamguard",
+  "name": "BankingTransaction",
+  "namespace": "com.streamguard.banking",
+  "doc": "Banking transfer transaction for APP fraud detection",
   "fields": [
     {"name": "transaction_id", "type": "string"},
-    {"name": "product_name", "type": "string"},
-    {"name": "price", "type": "double"},
-    {"name": "quantity", "type": "int"},
-    {"name": "customer_id", "type": "string"},
-    {"name": "event_time", "type": "long"}
+    {"name": "sender_user_id", "type": "string"},
+    {"name": "beneficiary_account_id", "type": "string"},
+    {"name": "amount", "type": "double"},
+    {"name": "currency", "type": "string", "default": "USD"},
+    {"name": "transfer_reason", "type": ["null", "string"], "default": null},
+    {"name": "session_id", "type": "string", "doc": "Links to mobile_app_events"},
+    {"name": "event_time", "type": "long", "logicalType": "timestamp-millis"}
   ]
 }

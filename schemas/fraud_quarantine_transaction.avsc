@@ -1,0 +1,23 @@
+{
+  "type": "record",
+  "name": "CustomerBankTransfer",
+  "namespace": "com.streamguard.banking",
+  "doc": "Quarantined Bank transfer",
+  "fields": [
+    {"name": "transaction_id", "type": "string"},
+    {"name": "sender_user_id", "type": "string"},
+    {"name": "beneficiary_account_id", "type": "string"},
+    {"name": "amount", "type": "double"},
+    {"name": "currency", "type": "string", "default": "USD"},
+    {"name": "transfer_reason", "type": ["null", "string"], "default": null},
+    {"name": "session_id", "type": "string"},
+    {"name": "device_fingerprint", "type": "string"},
+    {"name": "ip_address", "type": "string"},
+    {"name": "geolocation_lat", "type": "double"},
+    {"name": "geolocation_lon", "type": "double"},
+    {"name": "transfer_count_last_hour", "type": "int"},
+    {"name": "first_transfer_to_beneficiary", "type": "boolean"},
+    {"name": "beneficiary_country_code", "type": "string"},
+    {"name": "event_time", "type": "long", "logicalType": "timestamp-millis"}
+  ]
+}

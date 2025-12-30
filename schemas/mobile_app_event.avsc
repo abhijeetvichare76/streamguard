@@ -1,0 +1,41 @@
+{
+  "type": "record",
+  "name": "MobileAppEvent",
+  "namespace": "com.streamguard.avro",
+  "fields": [
+    {"name": "session_id", "type": "string"},
+    {"name": "user_id", "type": "string"},
+    {
+      "name": "event_type",
+      "type": {
+        "type": "enum",
+        "name": "EventType",
+        "symbols": ["LOGIN", "NAVIGATE_TRANSFER", "INPUT_AMOUNT", "SUBMIT"]
+      }
+    },
+    {
+      "name": "device_telemetry",
+      "type": {
+        "type": "record",
+        "name": "DeviceTelemetry",
+        "fields": [
+          {"name": "is_call_active", "type": "boolean"},
+          {"name": "battery_level", "type": "int"},
+          {"name": "typing_cadence_score", "type": "float"}
+        ]
+      }
+    },
+    {
+      "name": "geo_location",
+      "type": {
+        "type": "record",
+        "name": "GeoLocation",
+        "fields": [
+          {"name": "lat", "type": "double"},
+          {"name": "long", "type": "double"}
+        ]
+      }
+    },
+    {"name": "metadata", "type": "string", "doc": "JSON string"}
+  ]
+}
