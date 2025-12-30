@@ -63,13 +63,31 @@ def get_gcp_config():
 
     return project_id, region
 
-project_id, region = get_gcp_config()
+# Lazy initialization - only create agent when first accessed
+_detective_agent_instance = None
 
-detective_agent = Agent(
-    name="detective",
-    model=Gemini(model="gemini-2.0-flash-001", vertexai=True, project=project_id, location=region),
-    description="The Detective Agent investigates user context, beneficiary risk, and session behavior.",
-    instruction=DETECTIVE_INSTRUCTION,
-    tools=[user_history_tool, beneficiary_tool, session_context_tool]
-)
+def get_detective_agent():
+    """Get or create the detective agent instance (lazy initialization)."""
+    global _detective_agent_instance
+    if _detective_agent_instance is None:
+        project_id, region = get_gcp_config()
+        _detective_agent_instance = Agent(
+            name="detective",
+            model=Gemini(model="gemini-2.0-flash-001", vertexai=True, project=project_id, location=region),
+            description="The Detective Agent investigates user context, beneficiary risk, and session behavior.",
+            instruction=DETECTIVE_INSTRUCTION,
+            tools=[user_history_tool, beneficiary_tool, session_context_tool]
+        )
+    return _detective_agent_instance
+
+# Expose as detective_agent for backward compatibility
+# This will be called when the module attribute is accessed
+class _LazyAgent:
+    def __getattr__(self, name):
+        return getattr(get_detective_agent(), name)
+
+    def __call__(self, *args, **kwargs):
+        return get_detective_agent()(*args, **kwargs)
+
+detective_agent = _LazyAgent()
 

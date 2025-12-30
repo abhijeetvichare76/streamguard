@@ -58,13 +58,31 @@ def get_gcp_config():
 
     return project_id, region
 
-project_id, region = get_gcp_config()
+# Lazy initialization - only create agent when first accessed
+_judge_agent_instance = None
 
-judge_agent = Agent(
-    name="judge",
-    model=Gemini(model="gemini-2.0-flash-001", vertexai=True, project=project_id, location=region),
-    description="The Judge Agent applies business policies and makes remediation decisions.",
-    instruction=JUDGE_INSTRUCTION,
-    tools=[]  # Judge uses reasoning, not tools
-)
+def get_judge_agent():
+    """Get or create the judge agent instance (lazy initialization)."""
+    global _judge_agent_instance
+    if _judge_agent_instance is None:
+        project_id, region = get_gcp_config()
+        _judge_agent_instance = Agent(
+            name="judge",
+            model=Gemini(model="gemini-2.0-flash-001", vertexai=True, project=project_id, location=region),
+            description="The Judge Agent applies business policies and makes remediation decisions.",
+            instruction=JUDGE_INSTRUCTION,
+            tools=[]  # Judge uses reasoning, not tools
+        )
+    return _judge_agent_instance
+
+# Expose as judge_agent for backward compatibility
+# This will be called when the module attribute is accessed
+class _LazyAgent:
+    def __getattr__(self, name):
+        return getattr(get_judge_agent(), name)
+
+    def __call__(self, *args, **kwargs):
+        return get_judge_agent()(*args, **kwargs)
+
+judge_agent = _LazyAgent()
 
