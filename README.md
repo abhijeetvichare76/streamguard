@@ -2,8 +2,8 @@
 
 > Real-time fraud prevention powered by Google Cloud AI and Confluent streaming
 
-**🎯 Live Demo:** [Your Streamlit URL - Replace this with your actual Streamlit deployment URL]
-**📹 Demo Video:** [YouTube/Vimeo URL - Add once video is uploaded]
+**🎯 Live Demo:** [[Streamguard demo](https://streamguard.streamlit.app/)]
+**📹 Demo Video:** [https://www.youtube.com/watch?v=NbvQtVzEaOg]
 
 ---
 
@@ -19,6 +19,11 @@ All her credentials were legitimate. She logged in from her own phone, sitting a
 - **77%** success rate for AI voice cloning attacks (McAfee)
 - **Traditional systems fail:** All credentials are legitimate, transactions are authorized
 
+Sources: 
+https://www.psr.org.uk/media/rhelv4op/ps25-5-app-scams-reimbursement-consolidated-policy-statement-may-2025.pdf
+https://www.hoganlovells.com/en/publications/uk-app-fraud-what-in-scope-psps-need-to-know-about-the-new-mandatory-reimbursement-regime
+https://consumer.ftc.gov/consumer-alerts/2024/02/think-you-know-what-top-scam-2023-was-take-guess
+https://bankingjournal.aba.com/2024/11/ftc-older-adults-lost-up-to-61-5b-to-fraud-in-2023/
 ---
 
 ## The Solution: AI Agent Swarm
@@ -108,8 +113,28 @@ cd .. && python scripts/run_adk_swarm.py
 ```
 
 ### Try the Demo
+
+#### Setup for Streamlit (One-time)
+The Streamlit demo requires secrets configuration in addition to `.env`:
+
 ```bash
-# Option 1: Local Streamlit
+# 1. Copy the example secrets file
+cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+
+# 2. Edit .streamlit/secrets.toml with your credentials
+# - Copy values from your .env file for Confluent settings
+# - Copy your GCP service account JSON into the [gcp_service_account] section
+# - See .streamlit/secrets.toml.example for detailed instructions
+```
+
+**Important Notes:**
+- ✅ **Streamlit demo requires** `.streamlit/secrets.toml` for real AI agents
+- ✅ **Command-line scripts use** `.env` file (no secrets.toml needed)
+- ✅ **Simulation mode:** Demo works without secrets.toml, but uses canned responses instead of real AI
+
+#### Run the Demo
+```bash
+# Option 1: Local Streamlit (with real AI if secrets.toml is configured)
 streamlit run demo/app.py
 
 # Option 2: Live deployment

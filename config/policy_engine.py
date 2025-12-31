@@ -91,18 +91,26 @@ def _is_repeat_offender(investigation: InvestigationReport) -> bool:
 def _is_first_time_under_500(investigation: InvestigationReport) -> bool:
     """Policy 3: FIRST-TIME POLICY - 0 violations AND amount < $500.
 
+    Only applies if:
+    - No previous violations
+    - NOT a new account (Policy 4 should handle that)
+    - NOT a VIP customer (Policy 5 should handle that)
+
     Note: We don't have transaction_amount in InvestigationReport yet,
     so this is a simplified check. In production, you'd need to pass
     the transaction amount through the investigation.
     """
-    # For now, check only 0 violations
-    # TODO: Add transaction_amount to InvestigationReport
-    return investigation.user_profile.previous_violations == 0
-    # Full check would be:
-    # return (
-    #     investigation.user_profile.previous_violations == 0 and
-    #     investigation.transaction_amount < 500
-    # )
+    # Exclude cases handled by higher-priority policies
+    is_new_account_case = _is_new_account(investigation)
+    is_vip_case = _is_vip_customer(investigation)
+
+    return (
+        investigation.user_profile.previous_violations == 0 and
+        not is_new_account_case and
+        not is_vip_case
+    )
+    # TODO: Add transaction_amount check:
+    # and investigation.transaction_amount < 500
 
 
 def _is_new_account(investigation: InvestigationReport) -> bool:
