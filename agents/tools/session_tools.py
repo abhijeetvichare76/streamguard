@@ -1,15 +1,43 @@
 """Tools for querying mobile banking session context and behavior."""
 import os
 from google.cloud import bigquery
+from google.oauth2 import service_account
 from google.adk.tools import FunctionTool
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from .bigquery_utils import retry_query_with_backoff
 
 # Load environment variables
 load_dotenv()
 
 # Initialize client lazily
 def get_client():
+    """
+    Get a BigQuery client using the same credential system as data insertion.
+    Tries Streamlit secrets first, then environment variables, then default credentials.
+    """
+    # Try Streamlit secrets first (for deployed app)
+    try:
+        import streamlit as st
+        if hasattr(st, 'secrets') and "gcp_service_account" in st.secrets:
+            credentials = service_account.Credentials.from_service_account_info(
+                dict(st.secrets["gcp_service_account"])
+            )
+            project_id = st.secrets.get("GCP_PROJECT_ID", "partner-catalyst")
+            return bigquery.Client(credentials=credentials, project=project_id)
+    except (ImportError, Exception):
+        pass
+
+    # Try environment variable for service account key file
+    key_path = os.getenv("GCP_SERVICE_ACCOUNT_KEY") or os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    if key_path and os.path.exists(key_path):
+        try:
+            credentials = service_account.Credentials.from_service_account_file(key_path)
+            return bigquery.Client(credentials=credentials)
+        except Exception:
+            pass
+
+    # Fall back to default credentials (ADC)
     return bigquery.Client()
 
 def get_session_context(transaction_id: str) -> dict:
@@ -97,10 +125,10 @@ def get_session_context(transaction_id: str) -> dict:
         client = get_client()
         dataset_id = "streamguard_threats"
         table_id = "mobile_banking_sessions"
-        
+
         # 1. Get the specific session for this transaction
         query_session = f"""
-        SELECT 
+        SELECT
             session_id, user_id, event_type, is_call_active,
             typing_cadence_score, session_duration_seconds,
             battery_level, is_rooted_jailbroken,
@@ -110,17 +138,23 @@ def get_session_context(transaction_id: str) -> dict:
         WHERE transaction_id = @transaction_id
         LIMIT 1
         """
-        
+
         job_config = bigquery.QueryJobConfig(
             query_parameters=[
                 bigquery.ScalarQueryParameter("transaction_id", "STRING", transaction_id)
             ]
         )
-        
-        session_result = client.query(query_session, job_config=job_config).result()
-        session = next(iter(session_result), None)
-        
+
+        def execute_session_query():
+            session_result = client.query(query_session, job_config=job_config).result()
+            session = next(iter(session_result), None)
+            return session
+
+        # Retry with exponential backoff to handle data latency
+        session = retry_query_with_backoff(execute_session_query, max_retries=3, initial_delay=2)
+
         if not session:
+            print(f"[BQ] Session for transaction {transaction_id} not found after retries")
             return {"transaction_id": transaction_id, "status": "no_session_found", "risk": "high_missing_context"}
 
         # 2. Calculate Velocity (Sessions in last hour for this user)
